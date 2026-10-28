@@ -2670,53 +2670,114 @@ input:focus, textarea:focus, select:focus {
   .mock-flyfix-steps--four{ grid-template-columns: 1fr; }
 }
 
-/* Coverage — split banner: copy + map | coastal photo + soft fade + navy bar */
+/* Coverage — split banner: richer copy + map | coastal photo + soft fade */
 .mock-coverage{
+  --coverage-fade: #ffffff;
   padding: 0;
-  background: #fff;
+  background: var(--bg);
   border-bottom: 10px solid #0E2A47;
   overflow: hidden;
+  color: var(--text);
 }
 .mock-coverage-panel{
   display: grid;
-  grid-template-columns: minmax(300px, 0.95fr) minmax(340px, 1.05fr);
+  grid-template-columns: minmax(340px, 1.15fr) minmax(300px, 0.85fr);
   align-items: stretch;
-  min-height: 320px;
+  min-height: 380px;
   max-width: 100%;
 }
 .mock-coverage-left{
   display: grid;
-  grid-template-columns: minmax(160px, 0.95fr) minmax(150px, 0.9fr);
+  grid-template-columns: minmax(220px, 1.2fr) minmax(120px, 0.7fr);
   align-items: center;
-  gap: 8px clamp(20px, 3vw, 40px);
-  padding: 56px clamp(24px, 5vw, 72px) 56px clamp(24px, 5vw, 64px);
-  background: #fff;
+  gap: 16px clamp(18px, 2.5vw, 36px);
+  padding: 48px clamp(22px, 4vw, 64px);
+  background: var(--bg);
   z-index: 2;
 }
 .mock-coverage-copy h2{
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-family: var(--font-heading);
-  font-size: clamp(34px, 4.2vw, 48px);
+  font-size: clamp(32px, 4vw, 46px);
   font-weight: 800;
-  color: #0E2A47;
+  color: var(--text);
   letter-spacing: -.4px;
   line-height: 1.05;
 }
-.mock-coverage-copy p{
-  margin: 0;
-  color: #0E2A47;
-  font-size: clamp(14px, 1.35vw, 17px);
+.mock-coverage-lead{
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: clamp(15px, 1.4vw, 18px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.mock-coverage-body{
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: clamp(13px, 1.15vw, 15px);
   font-weight: 400;
-  line-height: 1.35;
-  max-width: 16em;
-  opacity: .88;
+  line-height: 1.5;
+  max-width: 36em;
+}
+.mock-coverage-points{
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.mock-coverage-points li{
+  position: relative;
+  padding-left: 1.15em;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.mock-coverage-points li::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .45em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+.mock-coverage-cities-label{
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mock-coverage-cities{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  max-width: 38em;
+}
+.mock-coverage-cities li{
+  margin: 0;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  background: var(--stat-bg);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 6px;
 }
 .mock-coverage-map{
   position: relative;
   display: grid;
   place-items: center;
   justify-self: end;
-  width: min(100%, 200px);
+  align-self: center;
+  width: min(100%, 180px);
   aspect-ratio: 3 / 4;
 }
 .mock-coverage-map img{
@@ -2735,32 +2796,45 @@ input:focus, textarea:focus, select:focus {
   font-family: var(--font-heading), system-ui, sans-serif;
   font-weight: 800;
   letter-spacing: .22em;
-  font-size: clamp(11px, 1.1vw, 13px);
+  font-size: clamp(10px, 1vw, 12px);
   color: #B8E4EE;
   pointer-events: none;
   transform: translateY(2%);
 }
 .mock-coverage-photo{
   position: relative;
-  min-height: 320px;
-  margin-left: -48px; /* overlap so fade sits under left panel */
+  min-height: 380px;
+  margin-left: -40px;
 }
 .mock-coverage-photo::before{
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
   width: 48%;
-  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,.92) 22%, rgba(255,255,255,.45) 55%, transparent 100%);
+  /* Fallback without color-mix */
+  background: linear-gradient(90deg, var(--coverage-fade) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--coverage-fade) 0%, color-mix(in srgb, var(--coverage-fade) 88%, transparent) 24%, color-mix(in srgb, var(--coverage-fade) 40%, transparent) 58%, transparent 100%);
   z-index: 1;
   pointer-events: none;
 }
 .mock-coverage-photo img{
   width: 100%;
   height: 100%;
-  min-height: 320px;
+  min-height: 380px;
   object-fit: cover;
   object-position: 55% center;
   display: block;
+}
+
+@media (prefers-color-scheme: light){
+  .mock-coverage{ --coverage-fade: #ffffff; }
+}
+@media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference){
+  .mock-coverage{ --coverage-fade: #0a1f35; }
+  .mock-coverage-map img{
+    filter: brightness(1.15) saturate(.9);
+  }
+  .mock-coverage-map span{ color: #d7f3f8; }
 }
 
 @media (max-width: 980px){
@@ -2771,14 +2845,16 @@ input:focus, textarea:focus, select:focus {
   .mock-coverage-panel{ grid-template-columns: 1fr; min-height: 0; }
   .mock-coverage-left{
     grid-template-columns: 1fr auto;
-    padding: 36px 22px 24px;
-    gap: 18px;
+    align-items: start;
+    padding: 32px 20px 24px;
+    gap: 16px;
   }
-  .mock-coverage-map{ width: 110px; justify-self: end; aspect-ratio: auto; }
-  .mock-coverage-photo{ min-height: 240px; margin-left: 0; }
+  .mock-coverage-map{ width: 96px; justify-self: end; aspect-ratio: auto; margin-top: 4px; }
+  .mock-coverage-body{ max-width: none; }
+  .mock-coverage-photo{ min-height: 220px; margin-left: 0; }
   .mock-coverage-photo::before{
     width: 100%; height: 44%; inset: 0 0 auto 0;
-    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,.75) 38%, transparent 100%);
+    background: linear-gradient(180deg, var(--coverage-fade) 0%, color-mix(in srgb, var(--coverage-fade) 70%, transparent) 40%, transparent 100%);
   }
 }
 @media (max-width: 640px){
