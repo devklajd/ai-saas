@@ -336,7 +336,7 @@ add_action( 'wp_ajax_upload-attachment', 'road_aid_bump_limits_for_image_metadat
  */
 function road_aid_enqueue_assets() {
 	// Theme uses RBNo 3.1 (loaded via @font-face in style.css from assets/fonts/)
-	wp_enqueue_style( 'road-aid-style', get_stylesheet_uri(), array(), '1.5.8' );
+	wp_enqueue_style( 'road-aid-style', get_stylesheet_uri(), array(), '1.5.9' );
 	
 	// Enqueue JavaScript
 	wp_enqueue_script( 'road-aid-script', get_template_directory_uri() . '/assets/theme.js', array(), '1.2.0', true );

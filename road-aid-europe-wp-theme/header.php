@@ -62,14 +62,14 @@ document.addEventListener('click',function(e){
 <?php
 
 /**
- * Primary nav for homepage redesign: Emergency, Medical, Fly & Fix, About, Coverage.
+ * Primary nav for homepage redesign: Emergency, Fly & Fix, Medical, About, Coverage.
  */
 function road_aid_primary_nav_links() {
 	$home = trailingslashit( home_url( '/' ) );
 	$items = array(
 		array( __( 'Emergency', 'road-aid-europe' ), get_permalink( get_page_by_path( 'emergency' ) ) ?: home_url( '/emergency/' ) ),
-		array( __( 'Medical Assistance', 'road-aid-europe' ), $home . '#medical-assistance' ),
 		array( __( 'Fly & Fix', 'road-aid-europe' ), $home . '#fly-and-fix' ),
+		array( __( 'Medical Assistance', 'road-aid-europe' ), $home . '#medical-assistance' ),
 		array( __( 'About Us', 'road-aid-europe' ), get_permalink( get_page_by_path( 'about' ) ) ?: home_url( '/about/' ) ),
 		array( __( 'Coverage', 'road-aid-europe' ), get_permalink( get_page_by_path( 'coverage' ) ) ?: home_url( '/coverage/' ) ),
 	);
