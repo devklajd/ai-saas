@@ -266,7 +266,14 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
 h1, .h1 { font-weight: 900; }
 h2, h3, h4 { font-weight: 700; }
 h5, h6 { font-weight: 400; }
-.container{ width:min(var(--max), calc(100% - 0px)); margin:0 auto; }
+.container{
+  width: min(var(--max), 100%);
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+html, body{ overflow-x: clip; }
 .nav{
   position:sticky; top:0; z-index:50;
   backdrop-filter: blur(10px);
@@ -1531,7 +1538,8 @@ input:focus, textarea:focus, select:focus {
 /* Responsive Design - Enhanced Breakpoints */
 @media (max-width: 1200px) {
   .container {
-    padding: 0 20px;
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
   }
   
   .section-title {
@@ -1641,7 +1649,8 @@ input:focus, textarea:focus, select:focus {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 16px;
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
   }
   
   .nav-inner {
@@ -1766,7 +1775,8 @@ input:focus, textarea:focus, select:focus {
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 12px;
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
   }
   
   .h1 {
@@ -1819,8 +1829,8 @@ input:focus, textarea:focus, select:focus {
   }
   
   .sticky-help {
-    right: 8px;
-    bottom: 8px;
+    right: max(12px, env(safe-area-inset-right, 0px));
+    bottom: max(12px, env(safe-area-inset-bottom, 0px));
   }
   
   .fab {
@@ -2304,13 +2314,16 @@ input:focus, textarea:focus, select:focus {
 }
 .hero-mockup-inner{
   position: relative; z-index: 1;
-  padding: 64px 0 56px;
+  /* vertical only — keep .container side padding so mobile text isn't edge-flush */
+  padding-top: 64px;
+  padding-bottom: 56px;
 }
 .hero-mockup-copy{
   max-width: 540px;
   margin: 0;
   text-align: left;
   color: #fff;
+  padding-inline: 0;
 }
 .hero-mockup-copy .h1{
   color: #fff;
@@ -2922,14 +2935,39 @@ input:focus, textarea:focus, select:focus {
 }
 @media (max-width: 640px){
   .hero--mockup{ min-height: 480px; }
-  .hero-mockup-inner{ padding: 48px 0 40px; }
-  .cover-strip{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .cover-strip-item{ padding: 16px 10px 14px; }
+  .hero-mockup-inner{ padding-top: 48px; padding-bottom: 40px; }
+  .hero-mockup-copy{ max-width: none; }
+  .hero-mockup-lead{ max-width: none; }
+  .hero-mockup-copy .btn.primary,
+  .hero-actions .btn{ max-width: 100%; }
+  .cover-strip-section{ padding: 26px 0 28px; }
+  .cover-strip-head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .cover-strip{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .cover-strip-item{ padding: 16px 10px 14px; min-width: 0; }
   .cover-strip-icon{ width: 50px; height: 50px; }
-  .cover-strip-label{ font-size: 12px; }
+  .cover-strip-label{
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .mock-medical .container,
+  .mock-flyfix .container{ padding-bottom: 8px; }
+  .mock-medical-heading{ gap: 10px; }
+  .mock-medical-heading h2{ font-size: clamp(24px, 7vw, 30px); }
+  .mock-detail-card{ min-width: 0; }
   .mock-flyfix-steps{ grid-template-columns: 1fr; }
   .mock-flyfix-steps::before{ display: none; }
   .mock-flyfix-inset{ width: 44%; right: 10px; bottom: 10px; }
   .mock-medical-grid{ padding: 28px 0; }
   .mock-flyfix{ padding: 28px 0; }
+  .mock-coverage-left{ padding: 28px max(24px, env(safe-area-inset-right, 0px)) 22px max(24px, env(safe-area-inset-left, 0px)); }
+  .sticky-help{
+    right: max(12px, env(safe-area-inset-right, 0px));
+    bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
 }
