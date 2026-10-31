@@ -56,7 +56,7 @@ $assistance_url  = ( $assistance_page && get_permalink( $assistance_page ) ) ? g
 $corporate_url   = ( $corporate_page && get_permalink( $corporate_page ) ) ? get_permalink( $corporate_page ) : home_url( '/corporate' );
 $providers_url   = ( $providers_page && get_permalink( $providers_page ) ) ? get_permalink( $providers_page ) : home_url( '/providers' );
 
-$emergency_phone = function_exists( 'road_aid_get_emergency_phone' ) ? road_aid_get_emergency_phone() : '+355 69 405 3525';
+$emergency_phone = function_exists( 'road_aid_get_emergency_phone' ) ? road_aid_get_emergency_phone() : '+355 44 527 122';
 $emergency_raw   = preg_replace( '/\D/', '', $emergency_phone );
 
 // Hero image - filter allows Customizer or child theme to override
@@ -88,7 +88,7 @@ $home_strings = array(
 	'24/7 roadside assistance in Albania. Fast tow truck service, tire change, fuel delivery,' => __( '24/7 roadside assistance in Albania. Fast tow truck service, tire change, fuel delivery,', 'road-aid-europe' ),
 	'lockout service and emergency towing. Call ROAD AID Europe now.' => __( 'lockout service and emergency towing. Call ROAD AID Europe now.', 'road-aid-europe' ),
 	'>Get Help Now<'                 => '>' . __( 'Get Help Now', 'road-aid-europe' ) . '<',
-	'>Call +355 69 405 3525<'        => '>' . sprintf( __( 'Call %s', 'road-aid-europe' ), esc_html( $emergency_phone ) ) . '<',
+	'>Call +355 44 527 122<'        => '>' . sprintf( __( 'Call %s', 'road-aid-europe' ), esc_html( $emergency_phone ) ) . '<',
 	'Tow Truck Service &bull; Battery &bull; Flat Tire &bull; Lockout &bull; Fuel &bull; Emergency Roadside Assistance' => __( 'Tow Truck Service', 'road-aid-europe' ) . ' &bull; ' . __( 'Battery', 'road-aid-europe' ) . ' &bull; ' . __( 'Flat Tire', 'road-aid-europe' ) . ' &bull; ' . __( 'Lockout', 'road-aid-europe' ) . ' &bull; ' . __( 'Fuel', 'road-aid-europe' ) . ' &bull; ' . __( 'Emergency Roadside Assistance', 'road-aid-europe' ),
 	'>Always available<'             => '>' . __( 'Always available', 'road-aid-europe' ) . '<',
 	'>Average arrival time<'         => '>' . __( 'Average arrival time', 'road-aid-europe' ) . '<',

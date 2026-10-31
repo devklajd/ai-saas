@@ -381,7 +381,7 @@ function road_aid_customize_register( $wp_customize ) {
 	
 	// Emergency Phone
 	$wp_customize->add_setting( 'emergency_phone', array(
-		'default'           => '+355694053525',
+		'default'           => '+35544527122',
 		'sanitize_callback' => 'sanitize_text_field',
 	) );
 	$wp_customize->add_control( 'emergency_phone', array(
@@ -455,7 +455,7 @@ function road_aid_get_option( $option, $default = '' ) {
  * Get emergency phone
  */
 function road_aid_get_emergency_phone() {
-	return road_aid_get_option( 'emergency_phone', '+355694053525' );
+	return road_aid_get_option( 'emergency_phone', '+35544527122' );
 }
 
 /**
