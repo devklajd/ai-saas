@@ -1,0 +1,538 @@
+
+<!-- Home page — professional service layout -->
+
+<style>
+    /* ======= FORM MODAL ======= */
+    .rae-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .rae-modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    .rae-modal {
+      background: var(--bg, #0a1f35);
+      border: 1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rae-modal-overlay.active .rae-modal {
+      transform: translateY(0) scale(1);
+    }
+    .rae-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 22px 0;
+    }
+    .rae-modal-header h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+      margin: 0;
+    }
+    .rae-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .rae-modal-close:hover {
+      color: var(--text);
+      border-color: var(--brand);
+      background: rgba(211, 47, 47, 0.1);
+    }
+    .rae-modal-body {
+      padding: 8px 22px 22px;
+    }
+    .rae-modal-body .card.pad {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      background: transparent;
+    }
+    .rae-modal-body .card.pad h3 {
+      display: none;
+    }
+    .rae-modal-body .card.pad .note:last-child {
+      display: none;
+    }
+    @media (max-width: 600px) {
+      .rae-modal-overlay { padding: 12px; }
+      .rae-modal { max-width: 100%; max-height: 95vh; }
+      .rae-modal-header { padding: 16px 16px 0; }
+      .rae-modal-body { padding: 8px 16px 16px; }
+    }
+
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 15px;
+      align-items: center;
+      min-height: 480px;
+    }
+    .hero-left { text-align: left; }
+    .hero-left .hero-centered { margin: 0; max-width: none; text-align: left; }
+    .hero-left .hero-actions { justify-content: flex-start; }
+    .hero-image-wrap {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, rgba(211,47,47,0.12), rgba(14,42,71,0.4));
+    }
+    .hero-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .hero-split { grid-template-columns: 1fr; gap: 32px; min-height: auto; }
+      .hero-left .hero-centered { text-align: center; }
+      .hero-left .hero-actions { justify-content: center; }
+      .hero-image-wrap { max-height: 320px; aspect-ratio: 16/10; }
+    }
+    </style>
+    
+    <main id="home" class="hero hero--mockup">
+        <div class="hero-media" aria-hidden="true">
+            <img decoding="async" width="1600" height="900" src="https://roadaideurope.com/wp-content/uploads/2026/10/rae-hero-tow-coast.jpg?v=20261028b" alt="" loading="eager">
+            <div class="hero-media-shade"></div>
+        </div>
+        <div class="container hero-mockup-inner">
+            <div class="hero-mockup-copy">
+                <h1 class="h1 fade-in-up">
+                    Roadside help.<br>
+                    Minutes away.
+                </h1>
+                <p class="hero-mockup-lead fade-in-up fade-in-up-delay-1">24/7 roadside assistance across Albania — fast tow truck response, tire change, fuel delivery, lockout service and emergency support when you need it.</p>
+                <div class="hero-actions fade-in-up fade-in-up-delay-2">
+                    <a class="btn primary btn-lg" href="https://api.whatsapp.com/send/?phone=355694053525&amp;text=Hello+Road+Aid+Europe.+I+need+roadside+assistance.+My+location+is%3A+&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer"><span>Get Roadside Help</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section id="services" class="section cover-strip-section">
+        <div class="container">
+            <div class="cover-strip-head">
+                <h2 class="cover-strip-title">What we cover</h2>
+                <p class="cover-strip-lead">Six essentials. One call away — 24/7 across Albania.</p>
+            </div>
+            <div class="cover-strip" role="list">
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M1 17h2"/><path d="M3 17V8h8l3 4h6v5"/><path d="M14 12h4"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/><path d="M10 8v4"/><path d="M19 9l3 2v4"/></svg></span>
+                    <span class="cover-strip-label">Towing</span>
+                </a>
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="12" height="13" rx="1.5"/><path d="M9 7V5h4v2"/><path d="M19 11v5"/><path d="M11 11l-1.4 3.2h2.8L11 17.4"/></svg></span>
+                    <span class="cover-strip-label">Battery Assistance</span>
+                </a>
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10.5" r="6.8"/><circle cx="12" cy="10.5" r="2.3"/><path d="M12 4.5v1.3"/><path d="M6.4 7.2l.9.9"/><path d="M17.6 7.2l-.9.9"/><path d="M5.2 10.5h1.3"/><path d="M17.5 10.5h1.3"/><path d="M3.8 20.2h16.4"/><path d="M7 17.2c1.1 1.4 2.9 2.1 5 2.1s3.9-.7 5-2.1"/><path d="M15.8 3.2l1.4-1.5"/><path d="M16.5 2.2l2 .6"/></svg></span>
+                    <span class="cover-strip-label">Flat Tire</span>
+                </a>
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.2"/><path d="M11 12.2 20.5 2.7"/><path d="M16.2 7.1l2.2 2.2"/><path d="M18.2 5.1l1.7-.4.4 1.7"/><path d="M19.8 3.5l1.7-.4.4 1.7"/></svg></span>
+                    <span class="cover-strip-label">Lockout</span>
+                </a>
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15"/><path d="M6 10h6"/><path d="M6 14h6"/><path d="M14 12h1.5a2 2 0 0 1 2 2v5"/><path d="M17.5 9.5V7.8a1.2 1.2 0 0 1 .3-.8L20 4.8"/><path d="M19.5 19.5v.01"/></svg></span>
+                    <span class="cover-strip-label">Fuel Delivery</span>
+                </a>
+                <a class="cover-strip-item" role="listitem" href="https://roadaideurope.com/assistance/">
+                    <span class="cover-strip-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.1 18.2A1.8 1.8 0 0 0 3.7 21h16.6a1.8 1.8 0 0 0 1.6-2.8L13.7 3.9a1.8 1.8 0 0 0-3.4 0z"/><path d="M12 9v4.5"/><path d="M12 17h.01"/></svg></span>
+                    <span class="cover-strip-label">Accident Assistance</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="fly-and-fix" class="section mock-flyfix">
+        <div class="container">
+            <div class="mock-flyfix-grid">
+                <div class="mock-flyfix-copy">
+                    <div class="mock-flyfix-badge-row">
+                        <span class="mock-flyfix-icons" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                        </span>
+                        <span class="mock-flyfix-pill">FLY &amp; FIX</span>
+                    </div>
+                    <h2>You fly. We take care of your car.</h2>
+                    <p class="mock-flyfix-lead">Leave your car with us at Tirana Airport, and we coordinate its maintenance, cleaning, technical inspection or approved repairs while you travel.</p>
+                    <div class="mock-flyfix-actions">
+                        <a class="btn primary" href="https://api.whatsapp.com/send/?phone=355694053525&amp;text=Hello+Road+Aid+Europe.+I+want+to+book+FLY+%26+FIX+car+drop-off+at+Tirana+Airport.&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer"><span>Book Your Car Drop-off</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+                        <a class="btn mock-flyfix-secondary" href="#fly-and-fix-details"><span>Explore Fly &amp; Fix</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+                    </div>
+                    <p class="mock-flyfix-note">Only approved work. Additional work requires your approval.</p>
+                </div>
+                <div class="mock-flyfix-media">
+                    <img class="mock-flyfix-main" width="900" height="700" src="https://roadaideurope.com/wp-content/uploads/2026/10/rae-flyfix-keys.jpg?v=20261028b" alt="Customer handing car keys to a Road Aid Europe representative at Tirana Airport" loading="lazy" decoding="async">
+                    <img class="mock-flyfix-inset" width="420" height="320" src="https://roadaideurope.com/wp-content/uploads/2026/10/rae-flyfix-mechanic.jpg?v=20261028b" alt="Mechanic servicing a vehicle in a professional workshop" loading="lazy" decoding="async">
+                </div>
+            </div>
+
+            <div id="fly-and-fix-details" class="mock-detail-block mock-flyfix-services">
+                <h3>Our Services</h3>
+                <div class="mock-detail-grid mock-detail-grid--services">
+                    <div class="mock-detail-card">
+                        <strong>Car Cleaning &amp; Detailing</strong>
+                        <span>Interior and exterior washing, deep cleaning and upholstery care.</span>
+                    </div>
+                    <div class="mock-detail-card">
+                        <strong>Routine Maintenance</strong>
+                        <span>Oil and filter changes and scheduled servicing.</span>
+                    </div>
+                    <div class="mock-detail-card">
+                        <strong>Vehicle Checks</strong>
+                        <span>Tyre, brake, battery and fluid-level checks.</span>
+                    </div>
+                    <div class="mock-detail-card">
+                        <strong>Diagnostics</strong>
+                        <span>Assessment of warning lights and reported vehicle issues.</span>
+                    </div>
+                    <div class="mock-detail-card">
+                        <strong>Repairs</strong>
+                        <span>Coordination with suitable workshops based on your vehicle’s needs.</span>
+                    </div>
+                    <div class="mock-detail-card">
+                        <strong>Technical Vehicle Inspection</strong>
+                        <span>Arrangement of your vehicle’s mandatory physical and technical inspection at DPSHTRR regional centres or authorised technical inspection centres.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mock-detail-block">
+                <h3>How It Works</h3>
+                <div class="mock-flyfix-steps mock-flyfix-steps--four">
+                    <div class="mock-flyfix-step">
+                        <div class="mock-flyfix-step-top">
+                            <span class="mock-flyfix-step-num">1</span>
+                        </div>
+                        <strong>Book Your Drop-off</strong>
+                        <span>Share your travel dates, vehicle details and the services you need.</span>
+                    </div>
+                    <div class="mock-flyfix-step">
+                        <div class="mock-flyfix-step-top">
+                            <span class="mock-flyfix-step-num">2</span>
+                        </div>
+                        <strong>Leave Your Car with Us</strong>
+                        <span>Drop off your vehicle at the agreed location near Tirana Airport. We record its condition and confirm your requests.</span>
+                    </div>
+                    <div class="mock-flyfix-step">
+                        <div class="mock-flyfix-step-top">
+                            <span class="mock-flyfix-step-num">3</span>
+                        </div>
+                        <strong>Approve the Work</strong>
+                        <span>We share the proposed services, estimated costs and expected timing. Work begins only after your approval. Any additional work requires your approval separately.</span>
+                    </div>
+                    <div class="mock-flyfix-step">
+                        <div class="mock-flyfix-step-top">
+                            <span class="mock-flyfix-step-num">4</span>
+                        </div>
+                        <strong>Collect Your Car</strong>
+                        <span>We coordinate collection around your return and explain the work completed.</span>
+                    </div>
+                </div>
+                <p class="mock-flyfix-availability">Service availability and completion times depend on workshop and inspection appointments, parts availability and your travel dates. Arrangements and applicable charges are confirmed before proceeding.</p>
+                <a class="btn primary" href="https://api.whatsapp.com/send/?phone=355694053525&amp;text=Hello+Road+Aid+Europe.+I+want+to+book+FLY+%26+FIX+car+drop-off+at+Tirana+Airport.&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer"><span>Book Your Car Drop-off</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="medical-assistance" class="section mock-medical">
+        <div class="container">
+            <div class="mock-medical-grid">
+                <div class="mock-medical-copy">
+                    <div class="mock-medical-heading">
+                        <span class="mock-medical-icon" aria-hidden="true">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path><polyline points="4 12 8 12 10 9 13 15 15 12 20 12"></polyline></svg>
+                        </span>
+                        <div>
+                            <h2>Medical Assistance</h2>
+                            <p class="mock-medical-sub">Help accessing medical support during your trip</p>
+                        </div>
+                    </div>
+                    <p class="mock-medical-intro">If you feel unwell while visiting Albania, Road Aid Europe can help coordinate contact with healthcare professionals and local healthcare services.</p>
+                    <a class="btn primary mock-medical-btn" href="tel:+35544527122"><span>Call for Medical Support</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+                </div>
+                <div class="mock-medical-media">
+                    <img width="800" height="600" src="https://roadaideurope.com/wp-content/uploads/2026/10/rae-medical-assistance.jpg?v=20261028b" alt="Medical professional providing remote assistance by video consultation" loading="lazy" decoding="async">
+                </div>
+            </div>
+
+            <div class="mock-detail-grid">
+                <div class="mock-detail-card">
+                    <strong>Doctor Consultation by Phone</strong>
+                    <span>We can help arrange a telephone consultation, subject to doctor availability. The doctor determines whether your concern is suitable for assessment by phone or requires an in-person examination.</span>
+                </div>
+                <div class="mock-detail-card">
+                    <strong>Finding Local Healthcare</strong>
+                    <span>Our team can assist with locating a nearby clinic, hospital or pharmacy and coordinating appointment requests.</span>
+                </div>
+                <div class="mock-detail-card">
+                    <strong>Communication Support</strong>
+                    <span>We can assist with English-language communication and practical arrangements for accessing local healthcare.</span>
+                </div>
+                <div class="mock-detail-card">
+                    <strong>Transport Coordination</strong>
+                    <span>If needed, we can help contact local providers to arrange transport to a healthcare facility, subject to availability.</span>
+                </div>
+            </div>
+
+            <div class="mock-detail-block">
+                <h3>How to request assistance</h3>
+                <p>Call our team, share your location and briefly explain the assistance you need. We will discuss the available options and help coordinate your request.</p>
+                <a class="btn primary mock-medical-btn" href="tel:+35544527122"><span>Call for Medical Support</span><span class="btn-chevron" aria-hidden="true">›</span></a>
+            </div>
+
+            <div class="mock-detail-note">
+                <h3>Please note</h3>
+                <p>Road Aid Europe provides assistance and coordination. Medical advice, assessments and treatment are provided by independent healthcare professionals. Services depend on your location, provider availability and the nature of your request.</p>
+                <p>This service is not health insurance or an emergency medical service. In a medical emergency, contact local emergency services immediately rather than waiting for a telephone consultation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="coverage" class="section mock-coverage">
+        <div class="mock-coverage-panel">
+            <div class="mock-coverage-left">
+                <div class="mock-coverage-copy">
+                    <h2>Coverage</h2>
+                    <p class="mock-coverage-lead">Roadside assistance across Albania.</p>
+                    <p class="mock-coverage-body">24/7 tow truck and roadside help from the coast to the mountains — Tirana, Durres, Vlora, Saranda, Shkoder and every major route in between.</p>
+                    <ul class="mock-coverage-points">
+                        <li>Nationwide dispatch, day and night</li>
+                        <li>Tow truck, tire change, fuel &amp; lockout</li>
+                        <li>Tourists, rentals &amp; local drivers</li>
+                    </ul>
+                    <p class="mock-coverage-cities-label">Cities we cover</p>
+                    <ul class="mock-coverage-cities">
+                        <li>Tirana</li>
+                        <li>Durres</li>
+                        <li>Vlora</li>
+                        <li>Saranda</li>
+                        <li>Shkoder</li>
+                        <li>Elbasan</li>
+                        <li>Fier</li>
+                        <li>Korce</li>
+                        <li>Berat</li>
+                        <li>Lezhe</li>
+                        <li>Gjirokaster</li>
+                        <li>Kukes</li>
+                        <li>Ksamil</li>
+                    </ul>
+                </div>
+                <div class="mock-coverage-map" aria-hidden="true">
+                    <img src="https://roadaideurope.com/wp-content/themes/road-aid-europe-wp-theme/assets/al-coverage.svg?v=20261028f" alt="" width="200" height="267" loading="lazy" decoding="async">
+                    <span>ALBANIA</span>
+                </div>
+            </div>
+            <div class="mock-coverage-photo">
+                <img width="1600" height="900" src="https://roadaideurope.com/wp-content/uploads/2026/10/rae-coverage-coast.jpg?v=20261028c" alt="Coastal Albania — Road Aid Europe coverage area" loading="lazy" decoding="async">
+            </div>
+        </div>
+    </section>
+
+
+<section id="business" class="section">
+        <div class="container">
+            <div class="section-title centered">
+                <div>
+                    <h2>For businesses</h2>
+                    <p>Rental companies, fleet operators, and insurers — we handle roadside for your clients so you don&#8217;t have to.</p>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="card pad biz-card">
+                    <div class="biz-card-header">
+                        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+                        <h3>Rental &amp; Fleet Operators</h3>
+                    </div>
+                    <p>Your renters and drivers get 24/7 roadside assistance. We dispatch, track, and report — you get clean summaries and zero headaches.</p>
+                    <ul class="check-list">
+                        <li>Dedicated dispatch for your fleet</li>
+                        <li>Transparent per-case reporting</li>
+                        <li>No subscription — pay per use</li>
+                    </ul>
+                    <button class="btn primary" type="button" onclick="document.getElementById('fleetModal').classList.add('active');document.body.style.overflow='hidden';">Register Your Fleet</button>
+                </div>
+                <div class="card pad biz-card">
+                    <div class="biz-card-header">
+                        <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                        <h3>Become a Service Provider</h3>
+                    </div>
+                    <p>Own a tow truck, garage, or mobile repair service? Join our verified network and receive dispatched jobs in your area.</p>
+                    <ul class="check-list">
+                        <li>Get dispatched jobs directly</li>
+                        <li>Flexible — accept what you can handle</li>
+                        <li>Grow your business with us</li>
+                    </ul>
+                    <button class="btn" type="button" onclick="document.getElementById('providerModal').classList.add('active');document.body.style.overflow='hidden';">Apply as Provider</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    {{BLOG_SECTION}}
+    
+    <section id="emergency" class="section">
+        <div class="container">
+            <div class="section-title centered">
+                <div>
+                    <h2>Emergency</h2>
+                </div>
+            </div>
+            <div class="card pad" style="max-width: 760px; margin: 0 auto;">
+                <p class="note" style="margin: 0 0 10px; font-size: 14px; line-height: 1.7;">
+                    Our team is available <strong>24/7</strong> to provide fast <strong>tow truck and roadside help anywhere in Albania.</strong>
+                </p>
+                <p class="note" style="margin: 0 0 8px; font-size: 14px; line-height: 1.7;"><strong>Our emergency services include:</strong></p>
+                <ul class="check-list" style="margin-top: 0;">
+                    <li>Tow Truck Service</li>
+                    <li>Car Towing</li>
+                    <li>Tire Change</li>
+                    <li>Fuel Delivery</li>
+                    <li>Battery Jump Start</li>
+                    <li>Car Lockout Assistance</li>
+                </ul>
+                <p class="note" style="margin: 16px 0 0; font-size: 14px; line-height: 1.7;">
+                    <strong>Important:</strong> If there is an accident with injuries or a dangerous situation, please contact <strong>local emergency authorities first</strong>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+<!-- Fleet Registration Modal -->
+<div class="rae-modal-overlay" id="fleetModal">
+    <div class="rae-modal">
+        <div class="rae-modal-header">
+            <h3>Register Your Fleet</h3>
+            <button class="rae-modal-close" type="button" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="rae-modal-body">
+            {{FLEET_FORM}}
+        </div>
+    </div>
+</div>
+
+<!-- Provider Application Modal -->
+<div class="rae-modal-overlay" id="providerModal">
+    <div class="rae-modal">
+        <div class="rae-modal-header">
+            <h3>Become a Service Provider</h3>
+            <button class="rae-modal-close" type="button" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="rae-modal-body">
+            {{PROVIDER_FORM}}
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    function closeModal(overlay) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.rae-modal-overlay').forEach(function(overlay) {
+        overlay.querySelector('.rae-modal-close').addEventListener('click', function() {
+            closeModal(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeModal(overlay);
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.rae-modal-overlay.active').forEach(closeModal);
+        }
+    });
+})();
+</script>
+
+
+<!-- Fleet Registration Modal -->
+<div class="rae-modal-overlay" id="fleetModal">
+    <div class="rae-modal">
+        <div class="rae-modal-header">
+            <h3>Register Your Fleet</h3>
+            <button class="rae-modal-close" type="button" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="rae-modal-body">
+            {{FLEET_FORM}}
+        </div>
+    </div>
+</div>
+
+<!-- Provider Application Modal -->
+<div class="rae-modal-overlay" id="providerModal">
+    <div class="rae-modal">
+        <div class="rae-modal-header">
+            <h3>Become a Service Provider</h3>
+            <button class="rae-modal-close" type="button" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="rae-modal-body">
+            {{PROVIDER_FORM}}
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    function closeModal(overlay) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.rae-modal-overlay').forEach(function(overlay) {
+        overlay.querySelector('.rae-modal-close').addEventListener('click', function() {
+            closeModal(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeModal(overlay);
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.rae-modal-overlay.active').forEach(closeModal);
+        }
+    });
+})();
+</script>
