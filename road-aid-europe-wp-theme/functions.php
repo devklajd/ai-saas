@@ -201,6 +201,13 @@ function road_aid_load_po_translations( $override, $domain, $mofile ) {
 add_filter( 'override_load_textdomain', 'road_aid_load_po_translations', 10, 3 );
 
 function road_aid_lang_url( $lang_code ) {
+	// On translated SEO blog posts, switch to the sibling URL for that language.
+	if ( function_exists( 'is_singular' ) && is_singular( 'post' ) && function_exists( 'road_aid_get_post_translations' ) ) {
+		$map = road_aid_get_post_translations();
+		if ( isset( $map[ $lang_code ] ) ) {
+			return esc_url( $map[ $lang_code ] );
+		}
+	}
 	$url = remove_query_arg( 'lang' );
 	return esc_url( add_query_arg( 'lang', $lang_code, $url ) );
 }
@@ -3401,9 +3408,146 @@ function road_aid_language_attributes( $output ) {
 	if ( empty( $lang ) ) {
 		$lang = 'en-US';
 	}
+	// Translated SEO blog posts store their language on the post.
+	if ( is_singular( 'post' ) ) {
+		$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+		$map       = array(
+			'en' => 'en-US',
+			'it' => 'it-IT',
+			'es' => 'es-ES',
+			'de' => 'de-DE',
+			'sq' => 'sq-AL',
+		);
+		if ( $post_lang && isset( $map[ $post_lang ] ) ) {
+			$lang = $map[ $post_lang ];
+		}
+	}
 	return ' lang="' . esc_attr( $lang ) . '"';
 }
 add_filter( 'language_attributes', 'road_aid_language_attributes' );
+
+/**
+ * Hreflang map for multilingual SEO blog posts.
+ *
+ * @param int $post_id Post ID.
+ * @return array<string,string> lang => url
+ */
+function road_aid_get_post_translations( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_queried_object_id();
+	if ( ! $post_id ) {
+		return array();
+	}
+	$map = get_post_meta( $post_id, '_rae_translations', true );
+	if ( is_array( $map ) && ! empty( $map ) ) {
+		return $map;
+	}
+	$group = get_post_meta( $post_id, '_rae_translation_group', true );
+	if ( ! $group ) {
+		return array();
+	}
+	$q = new WP_Query(
+		array(
+			'post_type'      => 'post',
+			'post_status'    => 'publish',
+			'posts_per_page' => 10,
+			'meta_key'       => '_rae_translation_group',
+			'meta_value'     => $group,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	$out = array();
+	foreach ( $q->posts as $pid ) {
+		$lang = get_post_meta( $pid, '_rae_lang', true );
+		if ( $lang ) {
+			$out[ $lang ] = get_permalink( $pid );
+		}
+	}
+	return $out;
+}
+
+/**
+ * Output hreflang alternates for translated blog posts.
+ */
+function road_aid_output_post_hreflang() {
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
+	$map = road_aid_get_post_translations();
+	if ( count( $map ) < 2 ) {
+		return;
+	}
+	$hreflang_codes = array(
+		'en' => 'en',
+		'it' => 'it',
+		'es' => 'es',
+		'de' => 'de',
+		'sq' => 'sq-AL',
+	);
+	foreach ( $map as $lang => $url ) {
+		$code = isset( $hreflang_codes[ $lang ] ) ? $hreflang_codes[ $lang ] : $lang;
+		echo '<link rel="alternate" hreflang="' . esc_attr( $code ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+	}
+	// x-default → English when available, else first translation.
+	$default = isset( $map['en'] ) ? $map['en'] : reset( $map );
+	if ( $default ) {
+		echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $default ) . '" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'road_aid_output_post_hreflang', 2 );
+
+/**
+ * Align Yoast Open Graph locale with the post language for translated SEO posts.
+ *
+ * @param string $locale Current locale.
+ * @return string
+ */
+function road_aid_yoast_og_locale( $locale ) {
+	if ( ! is_singular( 'post' ) ) {
+		return $locale;
+	}
+	$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+	$map       = array(
+		'en' => 'en_US',
+		'it' => 'it_IT',
+		'es' => 'es_ES',
+		'de' => 'de_DE',
+		'sq' => 'sq_AL',
+	);
+	if ( $post_lang && isset( $map[ $post_lang ] ) ) {
+		return $map[ $post_lang ];
+	}
+	return $locale;
+}
+add_filter( 'wpseo_locale', 'road_aid_yoast_og_locale' );
+add_filter( 'wpseo_og_locale', 'road_aid_yoast_og_locale' );
+
+/**
+ * Keep Yoast schema inLanguage aligned with translated post language.
+ *
+ * @param array<string,mixed> $data Schema piece.
+ * @return array<string,mixed>
+ */
+function road_aid_yoast_schema_language( $data ) {
+	if ( ! is_singular( 'post' ) || ! is_array( $data ) ) {
+		return $data;
+	}
+	$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+	$map       = array(
+		'en' => 'en-US',
+		'it' => 'it-IT',
+		'es' => 'es-ES',
+		'de' => 'de-DE',
+		'sq' => 'sq-AL',
+	);
+	if ( $post_lang && isset( $map[ $post_lang ] ) && isset( $data['inLanguage'] ) ) {
+		$data['inLanguage'] = $map[ $post_lang ];
+	}
+	return $data;
+}
+add_filter( 'wpseo_schema_webpage', 'road_aid_yoast_schema_language' );
+add_filter( 'wpseo_schema_article', 'road_aid_yoast_schema_language' );
+
 
 /**
  * Ensure Yoast SEO compatibility
