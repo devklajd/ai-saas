@@ -247,6 +247,19 @@ function road_aid_language_switcher( $class_prefix = '' ) {
  */
 function road_aid_get_home_blog_section_html() {
 	$blog_post_type = apply_filters( 'road_aid_home_blog_post_type', 'post' );
+	$current_lang   = function_exists( 'road_aid_get_current_lang' ) ? road_aid_get_current_lang() : 'en';
+	// Prefer posts in the active UI language; keep legacy posts that have no _rae_lang meta.
+	$lang_meta_query = array(
+		'relation' => 'OR',
+		array(
+			'key'   => '_rae_lang',
+			'value' => $current_lang,
+		),
+		array(
+			'key'     => '_rae_lang',
+			'compare' => 'NOT EXISTS',
+		),
+	);
 	$blog_query     = new WP_Query(
 		array(
 			'post_type'           => $blog_post_type,
@@ -256,6 +269,7 @@ function road_aid_get_home_blog_section_html() {
 			'order'               => 'DESC',
 			'ignore_sticky_posts' => true,
 			'suppress_filters'    => true,
+			'meta_query'          => $lang_meta_query,
 		)
 	);
 	$blog_posts = $blog_query->posts;
@@ -268,6 +282,7 @@ function road_aid_get_home_blog_section_html() {
 				'orderby'          => 'date',
 				'order'            => 'DESC',
 				'suppress_filters' => true,
+				'meta_query'       => $lang_meta_query,
 			)
 		);
 	}
