@@ -201,6 +201,13 @@ function road_aid_load_po_translations( $override, $domain, $mofile ) {
 add_filter( 'override_load_textdomain', 'road_aid_load_po_translations', 10, 3 );
 
 function road_aid_lang_url( $lang_code ) {
+	// On translated SEO blog posts, switch to the sibling URL for that language.
+	if ( function_exists( 'is_singular' ) && is_singular( 'post' ) && function_exists( 'road_aid_get_post_translations' ) ) {
+		$map = road_aid_get_post_translations();
+		if ( isset( $map[ $lang_code ] ) ) {
+			return esc_url( $map[ $lang_code ] );
+		}
+	}
 	$url = remove_query_arg( 'lang' );
 	return esc_url( add_query_arg( 'lang', $lang_code, $url ) );
 }
@@ -240,6 +247,19 @@ function road_aid_language_switcher( $class_prefix = '' ) {
  */
 function road_aid_get_home_blog_section_html() {
 	$blog_post_type = apply_filters( 'road_aid_home_blog_post_type', 'post' );
+	$current_lang   = function_exists( 'road_aid_get_current_lang' ) ? road_aid_get_current_lang() : 'en';
+	// Prefer posts in the active UI language; keep legacy posts that have no _rae_lang meta.
+	$lang_meta_query = array(
+		'relation' => 'OR',
+		array(
+			'key'   => '_rae_lang',
+			'value' => $current_lang,
+		),
+		array(
+			'key'     => '_rae_lang',
+			'compare' => 'NOT EXISTS',
+		),
+	);
 	$blog_query     = new WP_Query(
 		array(
 			'post_type'           => $blog_post_type,
@@ -249,6 +269,7 @@ function road_aid_get_home_blog_section_html() {
 			'order'               => 'DESC',
 			'ignore_sticky_posts' => true,
 			'suppress_filters'    => true,
+			'meta_query'          => $lang_meta_query,
 		)
 	);
 	$blog_posts = $blog_query->posts;
@@ -261,6 +282,7 @@ function road_aid_get_home_blog_section_html() {
 				'orderby'          => 'date',
 				'order'            => 'DESC',
 				'suppress_filters' => true,
+				'meta_query'       => $lang_meta_query,
 			)
 		);
 	}
@@ -674,7 +696,7 @@ add_action( 'wp_ajax_upload-attachment', 'road_aid_bump_limits_for_image_metadat
  */
 function road_aid_enqueue_assets() {
 	// Theme uses RBNo 3.1 (loaded via @font-face in style.css from assets/fonts/)
-	wp_enqueue_style( 'road-aid-style', get_stylesheet_uri(), array(), '1.6.6' );
+	wp_enqueue_style( 'road-aid-style', get_stylesheet_uri(), array(), '1.6.7' );
 	
 	// Enqueue JavaScript
 	wp_enqueue_script( 'road-aid-script', get_template_directory_uri() . '/assets/theme.js', array(), '1.2.1', true );
@@ -779,6 +801,60 @@ function road_aid_customize_register( $wp_customize ) {
 		'type'    => 'text',
 	) );
 
+	// Adel Agency LLC — payment collection partner (do not invent values).
+	$wp_customize->add_section( 'road_aid_adel_agency', array(
+		'title'       => __( 'Adel Agency Payments', 'road-aid-europe' ),
+		'description' => __( 'Registered address, payment/refund contacts and refund policy for Adel Agency LLC. Leave blank until officially confirmed — empty fields are not shown on the Payments & Refunds page.', 'road-aid-europe' ),
+		'priority'    => 32,
+	) );
+	$wp_customize->add_setting( 'adel_agency_address', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	) );
+	$wp_customize->add_control( 'adel_agency_address', array(
+		'label'   => __( 'Registered business address', 'road-aid-europe' ),
+		'section' => 'road_aid_adel_agency',
+		'type'    => 'textarea',
+	) );
+	$wp_customize->add_setting( 'adel_agency_payments_email', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_email',
+	) );
+	$wp_customize->add_control( 'adel_agency_payments_email', array(
+		'label'   => __( 'Payment / refund email', 'road-aid-europe' ),
+		'section' => 'road_aid_adel_agency',
+		'type'    => 'email',
+	) );
+	$wp_customize->add_setting( 'adel_agency_payments_phone', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'adel_agency_payments_phone', array(
+		'label'   => __( 'Payment / refund telephone', 'road-aid-europe' ),
+		'section' => 'road_aid_adel_agency',
+		'type'    => 'text',
+	) );
+	$wp_customize->add_setting( 'adel_agency_refund_policy', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	) );
+	$wp_customize->add_control( 'adel_agency_refund_policy', array(
+		'label'       => __( 'Cancellation and refund policy', 'road-aid-europe' ),
+		'description' => __( 'Approved policy text only. Do not invent processing times.', 'road-aid-europe' ),
+		'section'     => 'road_aid_adel_agency',
+		'type'        => 'textarea',
+	) );
+	$wp_customize->add_setting( 'adel_agency_payment_url', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+	$wp_customize->add_control( 'adel_agency_payment_url', array(
+		'label'       => __( 'Default Adel Agency payment link (optional)', 'road-aid-europe' ),
+		'description' => __( 'When set, the pre-payment notice can deep-link customers through /pay/.', 'road-aid-europe' ),
+		'section'     => 'road_aid_adel_agency',
+		'type'        => 'url',
+	) );
+
 }
 add_action( 'customize_register', 'road_aid_customize_register' );
 
@@ -809,6 +885,180 @@ function road_aid_get_whatsapp_phone() {
 function road_aid_get_business_email() {
 	return road_aid_get_option( 'business_email', 'info@roadaideurope.com' );
 }
+
+/**
+ * Adel Agency LLC — registered address (empty until confirmed).
+ */
+function road_aid_get_adel_address() {
+	return trim( (string) road_aid_get_option( 'adel_agency_address', '' ) );
+}
+
+/**
+ * Adel Agency LLC — payment/refund enquiry email.
+ */
+function road_aid_get_adel_payments_email() {
+	return trim( (string) road_aid_get_option( 'adel_agency_payments_email', '' ) );
+}
+
+/**
+ * Adel Agency LLC — payment/refund enquiry phone.
+ */
+function road_aid_get_adel_payments_phone() {
+	return trim( (string) road_aid_get_option( 'adel_agency_payments_phone', '' ) );
+}
+
+/**
+ * Adel Agency LLC — approved cancellation/refund policy text.
+ */
+function road_aid_get_adel_refund_policy() {
+	return trim( (string) road_aid_get_option( 'adel_agency_refund_policy', '' ) );
+}
+
+/**
+ * Optional default Adel Agency payment URL.
+ */
+function road_aid_get_adel_payment_url() {
+	return trim( (string) road_aid_get_option( 'adel_agency_payment_url', '' ) );
+}
+
+/**
+ * Permalink for Payments & Refunds page.
+ *
+ * @return string
+ */
+function road_aid_get_payments_refunds_url() {
+	$page = get_page_by_path( 'payments-refunds' );
+	if ( $page && get_permalink( $page ) ) {
+		return get_permalink( $page );
+	}
+	return home_url( '/payments-refunds/' );
+}
+
+/**
+ * Pre-payment notice HTML for Adel Agency LLC collection.
+ *
+ * @param array $args Optional. continue_url => external Adel payment URL.
+ * @return string
+ */
+function road_aid_adel_payment_notice_html( $args = array() ) {
+	$payments_url = road_aid_get_payments_refunds_url();
+	$continue     = isset( $args['continue_url'] ) ? esc_url_raw( $args['continue_url'] ) : '';
+	ob_start();
+	?>
+	<div class="rae-adel-payment-notice card pad" role="note">
+		<p class="note" style="margin:0 0 10px;">
+			<?php esc_html_e( 'Payment for this service will be collected by Adel Agency LLC, Road Aid Europe’s payment collection partner.', 'road-aid-europe' ); ?>
+		</p>
+		<p class="note" style="margin:0;">
+			<a href="<?php echo esc_url( $payments_url ); ?>"><?php esc_html_e( 'Payments & Refunds', 'road-aid-europe' ); ?></a>
+			<?php if ( $continue ) : ?>
+				&nbsp;·&nbsp;
+				<a class="btn primary" href="<?php echo esc_url( $continue ); ?>" rel="noopener noreferrer" target="_blank"><?php esc_html_e( 'Continue to payment', 'road-aid-europe' ); ?></a>
+			<?php endif; ?>
+		</p>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/**
+ * Shortcode: [adel_payment_notice] or [adel_payment_notice url="https://..."]
+ */
+function road_aid_shortcode_adel_payment_notice( $atts = array() ) {
+	$atts = shortcode_atts(
+		array(
+			'url' => '',
+		),
+		$atts,
+		'adel_payment_notice'
+	);
+	$continue = $atts['url'] ? $atts['url'] : road_aid_get_adel_payment_url();
+	return road_aid_adel_payment_notice_html( array( 'continue_url' => $continue ) );
+}
+add_shortcode( 'adel_payment_notice', 'road_aid_shortcode_adel_payment_notice' );
+
+/**
+ * Whether a URL looks like an Adel Agency / configured payment destination.
+ *
+ * @param string $url URL to test.
+ * @return bool
+ */
+function road_aid_is_adel_payment_url( $url ) {
+	$url = trim( (string) $url );
+	if ( $url === '' ) {
+		return false;
+	}
+	$host = wp_parse_url( $url, PHP_URL_HOST );
+	if ( ! $host ) {
+		return false;
+	}
+	$host = strtolower( $host );
+	$configured = road_aid_get_adel_payment_url();
+	if ( $configured ) {
+		$cfg_host = wp_parse_url( $configured, PHP_URL_HOST );
+		if ( $cfg_host && strtolower( $cfg_host ) === $host ) {
+			return true;
+		}
+		if ( untrailingslashit( $url ) === untrailingslashit( $configured ) ) {
+			return true;
+		}
+	}
+	// Explicit class markers handled separately; host heuristics for known Adel naming.
+	if ( false !== strpos( $host, 'adelagency' ) || false !== strpos( $host, 'adel-agency' ) ) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Inject Adel pre-payment notice before Adel payment links in content.
+ *
+ * @param string $content Post content.
+ * @return string
+ */
+function road_aid_inject_adel_payment_notice( $content ) {
+	if ( is_admin() || ! is_string( $content ) || $content === '' ) {
+		return $content;
+	}
+	if ( false === stripos( $content, 'href=' ) ) {
+		return $content;
+	}
+	// Avoid double-injecting if notice already present.
+	if ( false !== strpos( $content, 'rae-adel-payment-notice' ) ) {
+		return $content;
+	}
+
+	$injected = false;
+	$updated  = preg_replace_callback(
+		'/<a\b[^>]*\bhref=(["\'])(https?:\/\/[^"\']+)\1[^>]*>/i',
+		function ( $m ) use ( &$injected ) {
+			$url        = html_entity_decode( $m[2], ENT_QUOTES );
+			$class_adel = (bool) preg_match( '/\bclass=(["\'])[^"\']*\badel-payment-link\b[^"\']*\1/i', $m[0] );
+			if ( ! $class_adel && ! road_aid_is_adel_payment_url( $url ) ) {
+				return $m[0];
+			}
+			if ( $injected ) {
+				return $m[0];
+			}
+			$injected = true;
+			$notice   = road_aid_adel_payment_notice_html();
+			// Rewrite direct Adel link through /pay/?to= for the notice+continue flow.
+			$pay_url = add_query_arg(
+				array(
+					'to' => rawurlencode( $url ),
+				),
+				home_url( '/pay/' )
+			);
+			$new_a = preg_replace( '/\bhref=(["\'])(https?:\/\/[^"\']+)\1/i', 'href="' . esc_url( $pay_url ) . '"', $m[0], 1 );
+			return $notice . $new_a;
+		},
+		$content,
+		1
+	);
+
+	return is_string( $updated ) ? $updated : $content;
+}
+add_filter( 'the_content', 'road_aid_inject_adel_payment_notice', 12 );
 
 /**
  * Get reCAPTCHA v2 site key
@@ -2543,6 +2793,18 @@ function road_aid_get_seed_pages() {
 			'content'  => '',
 		),
 		array(
+			'title'    => 'Payments & Refunds',
+			'slug'     => 'payments-refunds',
+			'template' => 'page-payments-refunds.php',
+			'content'  => '',
+		),
+		array(
+			'title'    => 'Pay',
+			'slug'     => 'pay',
+			'template' => 'page-adel-pay.php',
+			'content'  => '',
+		),
+		array(
 			'title'    => 'Services',
 			'slug'     => 'services',
 			'template' => '',
@@ -3401,9 +3663,146 @@ function road_aid_language_attributes( $output ) {
 	if ( empty( $lang ) ) {
 		$lang = 'en-US';
 	}
+	// Translated SEO blog posts store their language on the post.
+	if ( is_singular( 'post' ) ) {
+		$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+		$map       = array(
+			'en' => 'en-US',
+			'it' => 'it-IT',
+			'es' => 'es-ES',
+			'de' => 'de-DE',
+			'sq' => 'sq-AL',
+		);
+		if ( $post_lang && isset( $map[ $post_lang ] ) ) {
+			$lang = $map[ $post_lang ];
+		}
+	}
 	return ' lang="' . esc_attr( $lang ) . '"';
 }
 add_filter( 'language_attributes', 'road_aid_language_attributes' );
+
+/**
+ * Hreflang map for multilingual SEO blog posts.
+ *
+ * @param int $post_id Post ID.
+ * @return array<string,string> lang => url
+ */
+function road_aid_get_post_translations( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_queried_object_id();
+	if ( ! $post_id ) {
+		return array();
+	}
+	$map = get_post_meta( $post_id, '_rae_translations', true );
+	if ( is_array( $map ) && ! empty( $map ) ) {
+		return $map;
+	}
+	$group = get_post_meta( $post_id, '_rae_translation_group', true );
+	if ( ! $group ) {
+		return array();
+	}
+	$q = new WP_Query(
+		array(
+			'post_type'      => 'post',
+			'post_status'    => 'publish',
+			'posts_per_page' => 10,
+			'meta_key'       => '_rae_translation_group',
+			'meta_value'     => $group,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	$out = array();
+	foreach ( $q->posts as $pid ) {
+		$lang = get_post_meta( $pid, '_rae_lang', true );
+		if ( $lang ) {
+			$out[ $lang ] = get_permalink( $pid );
+		}
+	}
+	return $out;
+}
+
+/**
+ * Output hreflang alternates for translated blog posts.
+ */
+function road_aid_output_post_hreflang() {
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
+	$map = road_aid_get_post_translations();
+	if ( count( $map ) < 2 ) {
+		return;
+	}
+	$hreflang_codes = array(
+		'en' => 'en',
+		'it' => 'it',
+		'es' => 'es',
+		'de' => 'de',
+		'sq' => 'sq-AL',
+	);
+	foreach ( $map as $lang => $url ) {
+		$code = isset( $hreflang_codes[ $lang ] ) ? $hreflang_codes[ $lang ] : $lang;
+		echo '<link rel="alternate" hreflang="' . esc_attr( $code ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+	}
+	// x-default → English when available, else first translation.
+	$default = isset( $map['en'] ) ? $map['en'] : reset( $map );
+	if ( $default ) {
+		echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $default ) . '" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'road_aid_output_post_hreflang', 2 );
+
+/**
+ * Align Yoast Open Graph locale with the post language for translated SEO posts.
+ *
+ * @param string $locale Current locale.
+ * @return string
+ */
+function road_aid_yoast_og_locale( $locale ) {
+	if ( ! is_singular( 'post' ) ) {
+		return $locale;
+	}
+	$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+	$map       = array(
+		'en' => 'en_US',
+		'it' => 'it_IT',
+		'es' => 'es_ES',
+		'de' => 'de_DE',
+		'sq' => 'sq_AL',
+	);
+	if ( $post_lang && isset( $map[ $post_lang ] ) ) {
+		return $map[ $post_lang ];
+	}
+	return $locale;
+}
+add_filter( 'wpseo_locale', 'road_aid_yoast_og_locale' );
+add_filter( 'wpseo_og_locale', 'road_aid_yoast_og_locale' );
+
+/**
+ * Keep Yoast schema inLanguage aligned with translated post language.
+ *
+ * @param array<string,mixed> $data Schema piece.
+ * @return array<string,mixed>
+ */
+function road_aid_yoast_schema_language( $data ) {
+	if ( ! is_singular( 'post' ) || ! is_array( $data ) ) {
+		return $data;
+	}
+	$post_lang = get_post_meta( get_queried_object_id(), '_rae_lang', true );
+	$map       = array(
+		'en' => 'en-US',
+		'it' => 'it-IT',
+		'es' => 'es-ES',
+		'de' => 'de-DE',
+		'sq' => 'sq-AL',
+	);
+	if ( $post_lang && isset( $map[ $post_lang ] ) && isset( $data['inLanguage'] ) ) {
+		$data['inLanguage'] = $map[ $post_lang ];
+	}
+	return $data;
+}
+add_filter( 'wpseo_schema_webpage', 'road_aid_yoast_schema_language' );
+add_filter( 'wpseo_schema_article', 'road_aid_yoast_schema_language' );
+
 
 /**
  * Ensure Yoast SEO compatibility

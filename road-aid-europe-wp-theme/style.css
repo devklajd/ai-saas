@@ -3067,3 +3067,13 @@ input:focus, textarea:focus, select:focus {
     bottom: max(12px, env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ======= ADEL AGENCY PAYMENT NOTICE ======= */
+.rae-adel-payment-notice {
+  margin: 0 0 20px;
+  border-left: 3px solid var(--brand, #ED1C24);
+}
+.rae-adel-payment-notice .btn {
+  display: inline-flex;
+  margin-top: 8px;
+}
